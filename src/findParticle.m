@@ -377,7 +377,7 @@ for dpt=1:runN
     xmin = 0;
     ymin = 0;
     threshRaiseCounter=0;
-    brFraction=.05;
+    brFraction=.2;
     firsttimerun = 1;
     
     if dpt > 1
@@ -443,7 +443,7 @@ for dpt=1:runN
         %HIGHPOWER SECTION BEWARE
         %Sometimes images of the particle will not be very clear, and shadows
         %appear within the particle (this tends to happen with brightfield
-        %microscopy. The result is that portions of the particle will be
+        %microscopy). The result is that portions of the particle will be
         %detected as below threshold, and the algorithm will not detect the
         %true center of the particle.
         %The idea behind the Highpower setting is to "fill in" any "empty"
@@ -472,7 +472,7 @@ for dpt=1:runN
             imshow(view);
             figure(2);
             imshow(layer);
-            pause();
+            %pause();
         end
 
 
