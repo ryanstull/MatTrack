@@ -106,4 +106,25 @@ function autoTrack(varargin)
             end
         end
     end
+
+    function stitchTrack()
+
+        list = dir('.');
+        ls = size(list);
+
+        trackArr = zeros(0,2);
+
+        for m=1:ls(1)
+            if numel(regexp(list(m).name,'track.*\.mat')) > 0
+            disp(list(m).name);
+
+            load(list(m).name);
+            trackArr = cat(1,trackArr,track);
+            clear track;
+            end
+        end
+
+        save('finalTrack.mat','trackArr');
+
+    end
 end
