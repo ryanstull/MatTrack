@@ -1,4 +1,4 @@
-function stitchTrack(name)
+function stitchTrack()
 
 list = dir('.');
 ls = size(list);
@@ -10,9 +10,9 @@ for i=1:ls(1)
 	disp(list(i).name);
 
 	load(list(i).name);
-	trackArr = cat(1,trackArr,b);
-	clear b;
+	trackArr = cat(1,trackArr,track);
+	clear track;
     end
 end
 
-save(strcat(name,'.mat'),'trackArr');
+save('finalTrack.mat','trackArr');

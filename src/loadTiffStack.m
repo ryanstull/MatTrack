@@ -17,8 +17,9 @@ function [movie] = loadTiffStack(fname,varargin)
     height = info.Height;
     
     movie = zeros(height,width,numFrames,'uint16');
-    for k = startFrame:startFrame+numFrames
+    for k = startFrame:startFrame+numFrames-1
         movie(:,:,k-startFrame+1) = imread(fname, k, 'Info', info);
+        disp(strcat('Frame: ',num2str(k)));
     end
     
     movie = mat2gray(movie);
