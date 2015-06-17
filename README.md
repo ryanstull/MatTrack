@@ -18,10 +18,15 @@ tracked files.
 ###findParticle
 Contains the actual tracking algorithm.
 
-###PlayMovie
+###playMovie
 Plays a movie imported using importMovie. Can be used to overlay the tracking
 onto the actual images.
 
 ###superTrack
 Script that utilizes autotrack to track all movies in a data set.
 
+###loadTiffs
+Loads movies which are saved as multiple single-image tiff files in a directory.
+
+###loadTiffStack
+Loads movies which are saved as multi-image tiffs.
