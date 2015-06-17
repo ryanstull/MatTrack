@@ -1,4 +1,4 @@
-function PlayMovie(movie,varargin)
+function playMovie(movie,varargin)
 
 track1=[];
 track2=[];
