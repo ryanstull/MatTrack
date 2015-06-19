@@ -40,7 +40,6 @@ function autoTrack(varargin)
         for i=1:ceil(sumOfFrames(length(sumOfFrames))/FPC)
             movie = multiTiffAdapter();
             track = findParticle(movie,'-highpower');
-            track = [1,2];
             
             save(strcat('track',num2str(i),'.mat'),'track');
             save(strcat('movie',num2str(i),'.mat'),'movie');
