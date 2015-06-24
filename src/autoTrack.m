@@ -3,6 +3,7 @@ function autoTrack(varargin)
     FPC=0;
     autoTime=0;
     time='';
+    numberRun = '';
     for i = 1:2:length(varargin)
         switch varargin{i}
             case 'FPC'
@@ -11,6 +12,8 @@ function autoTrack(varargin)
                 autoTime=varargin{i+1};
             case 'time'
                 time=varargin{i+1};
+            case 'numberRun'
+                numberRun=varargin{i+1};
         end
     end
 
@@ -32,14 +35,17 @@ function autoTrack(varargin)
     
     if FPC==0
         movie = multiTiffAdapter();
-        track = findParticle(a,'-highpower');
+        %track = findParticle(movie,'-highpower');
+        track = [1,2];
         
         save('track.mat','track');
         save('movie.mat','movie');
     else
         for i=1:ceil(sumOfFrames(length(sumOfFrames))/FPC)
             movie = multiTiffAdapter();
-            track = findParticle(movie,'-highpower');
+            %track = findParticle(movie,'-highpower');
+            
+            track = [1,2];
             
             save(strcat('track',num2str(i),'.mat'),'track');
             save(strcat('movie',num2str(i),'.mat'),'movie');
@@ -50,6 +56,8 @@ function autoTrack(varargin)
     end
     
     stitchTrack();
+    
+    addTime();
 
     function [movie] = multiTiffAdapter()
         if FPC==0
@@ -106,24 +114,41 @@ function autoTrack(varargin)
         end
     end
 
-    function stitchTrack()
-
-        list = dir('.');
-        ls = size(list);
-
-        trackArr = zeros(0,2);
-
-        for m=1:ls(1)
-            if numel(regexp(list(m).name,'track.*\.mat')) > 0
-            disp(list(m).name);
-
-            load(list(m).name);
-            trackArr = cat(1,trackArr,track);
-            clear track;
-            end
-        end
-
-        save('finalTrack.mat','trackArr');
-
+    function addTime()
+        
+        trackFileStr = strcat('finalTrack',numberRun,'.mat'); %I guess this is 'finalTrack.mat'?
+        timeFileStr = 'timestep.txt'; %timestamp.txt or something
+        
+        load(trackFileStr); %I assume the name of the array is trackArr?
+        times = load(timeFileStr); %Probably will need to import it more fancily
+        
+        trackNtimes = cat(2,trackArr,times); %Before running, what is the format of the time file?
+        save(trackFileStr, trackNtimes);
+        clear times;
+        clear trackArr;
+        
+        
     end
+
+end
+
+function stitchTrack()
+
+list = dir('.');
+ls = size(list);
+
+trackArr = zeros(0,2);
+
+for m=1:ls(1)
+    if numel(regexp(list(m).name,'track.*\.mat')) > 0
+        disp(list(m).name);
+        
+        load(list(m).name);
+        trackArr = cat(1,trackArr,track);
+        clear track;
+    end
+end
+
+save(strcat('finalTrack.mat'),'trackArr'); %Do we need to change the name to finalTrack01, etc.?
+
 end
