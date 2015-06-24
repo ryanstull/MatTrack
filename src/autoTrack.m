@@ -1,17 +1,11 @@
 function autoTrack(varargin)
 
     FPC=0;
-    autoTime=0;
-    time='';
     numberRun = '';
     for i = 1:2:length(varargin)
         switch varargin{i}
             case 'FPC'
                 FPC=varargin{i+1};
-            case 'autoTime'
-                autoTime=varargin{i+1};
-            case 'time'
-                time=varargin{i+1};
             case 'numberRun'
                 numberRun=varargin{i+1};
         end
@@ -35,17 +29,14 @@ function autoTrack(varargin)
     
     if FPC==0
         movie = multiTiffAdapter();
-        %track = findParticle(movie,'-highpower');
-        track = [1,2];
+        track = findParticle(movie,'-highpower');
         
         save('track.mat','track');
         save('movie.mat','movie');
     else
         for i=1:ceil(sumOfFrames(length(sumOfFrames))/FPC)
             movie = multiTiffAdapter();
-            %track = findParticle(movie,'-highpower');
-            
-            track = [1,2];
+            track = findParticle(movie,'-highpower');
             
             save(strcat('track',num2str(i),'.mat'),'track');
             save(strcat('movie',num2str(i),'.mat'),'movie');
@@ -55,15 +46,15 @@ function autoTrack(varargin)
         end
     end
     
-    stitchTrack();
+    stitchTrack(numberRun);
     
-    addTime();
+    addTime(numberRun);
 
     function [movie] = multiTiffAdapter()
         if FPC==0
             movie = [];
             for j=1:numTiffs
-                movie = cat(movie,loadTiffStack(tiffs(j).name),3);
+                movie = cat(3,movie,loadTiffStack(tiffs(j).name));
             end
         else
             slice(1) = FPC*(i-1)+1;
@@ -114,25 +105,9 @@ function autoTrack(varargin)
         end
     end
 
-    function addTime()
-        
-        trackFileStr = strcat('finalTrack',numberRun,'.mat'); %I guess this is 'finalTrack.mat'?
-        timeFileStr = 'timestep.txt'; %timestamp.txt or something
-        
-        load(trackFileStr); %I assume the name of the array is trackArr?
-        times = load(timeFileStr); %Probably will need to import it more fancily
-        
-        trackNtimes = cat(2,trackArr,times); %Before running, what is the format of the time file?
-        save(trackFileStr, trackNtimes);
-        clear times;
-        clear trackArr;
-        
-        
-    end
-
 end
 
-function stitchTrack()
+function stitchTrack(numberRun)
 
 list = dir('.');
 ls = size(list);
@@ -149,6 +124,24 @@ for m=1:ls(1)
     end
 end
 
-save(strcat('finalTrack.mat'),'trackArr'); %Do we need to change the name to finalTrack01, etc.?
+save(strcat('finalTrack_run',numberRun,'.mat'),'trackArr'); 
+
+end
+
+function addTime(numberRun)
+
+trackFileStr = strcat('finalTrack_run',numberRun,'.mat'); 
+timeFileStr = 'timestep.txt'; 
+
+load(trackFileStr); 
+times = load(timeFileStr); 
+
+times = times(:,2);
+
+trackAndTimes = cat(2,trackArr,times); 
+save(trackFileStr, 'trackAndTimes');
+clear times;
+clear trackArr;
+
 
 end
